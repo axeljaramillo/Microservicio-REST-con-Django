@@ -5,15 +5,32 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.models import User
 
 from .models import (
     Profile, Category, Course, Lesson, Enrollment,
     LessonProgress, CourseReview
 )
 from .serializers import (
-    ProfileSerializer, CategorySerializer, CourseSerializer,
+    UserSerializer, ProfileSerializer, CategorySerializer, CourseSerializer,
     LessonSerializer, EnrollmentSerializer, LessonProgressSerializer, CourseReviewSerializer
 )
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """ViewSet for User model"""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['is_active', 'is_staff']
+    search_fields = ['username', 'email', 'first_name', 'last_name']
+    ordering_fields = ['username', 'email', 'date_joined']
+    ordering = ['username']
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -29,7 +46,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet for Category model (read-only)"""
+    """Categorias para los cursos ofrecidos (read-only)"""
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]

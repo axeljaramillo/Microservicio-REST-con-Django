@@ -6,6 +6,15 @@ from .models import (
 )
 
 
+class UserSerializer(serializers.ModelSerializer):
+    """Serializer for Django User model"""
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_active', 'date_joined']
+        read_only_fields = ['id', 'date_joined']
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     """Serializer for Profile model"""
     

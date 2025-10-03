@@ -37,6 +37,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('', lms_views.index, name='home'),
     path("polls/", include("polls.urls")),
     path('admin/', admin.site.urls),
     path('api/lms/', include('lms.urls')),
