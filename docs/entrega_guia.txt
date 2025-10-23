@@ -2,8 +2,6 @@ Microservicio REST con Django — Guía de Entrega y Evidencias
 Fecha: 2025-10-23
 Repositorio: https://github.com/axeljaramillo/Microservicio-REST-con-Django
 
-1) README.md — Contenido mínimo
-
 A. Instrucciones para levantar el servicio
 - Requisitos: Docker y Docker Compose
 - Pasos:
@@ -37,13 +35,9 @@ C. Ejemplo de endpoints / evidencias de Swagger
   - Swagger UI:  /swagger/
   - Redoc:       /redoc/
 
-2) Entrega (PDF al aula virtual)
 
-A. Portada
-- Nombre completo, matrícula y grupo.
-
-B. Esquema relacional (draw.io o similar)
-- Sugerencia de relaciones (describir en el diagrama):
+B. Esquema relacional 
+- Sugerencia de relaciones 
   - Usuario (auth_user) 1—1 Usuarios (perfil)
   - Usuarios (perfil)   1—N Inscripciones
   - Curso               1—N Lecciones
@@ -51,7 +45,7 @@ B. Esquema relacional (draw.io o similar)
   - Usuarios (perfil)   1—N Comentarios
   - Lección             1—N Comentarios
 
-C. Capturas de pantalla
+
 - Swagger funcionando (http://localhost:8500/swagger/).
 - Contenedor Docker en ejecución (docker compose ps / logs / captura de Docker Desktop).
 - Ejemplos de requests a endpoints (pueden ser capturas de Postman, curl o Swagger UI):
@@ -61,8 +55,6 @@ C. Capturas de pantalla
   - Inscribirse a un curso (POST /api/inscripciones/)
   - Comentar en una lección (POST /api/comentarios/)
 
-D. Enlace al repositorio de GitHub
-- https://github.com/axeljaramillo/Microservicio-REST-con-Django
 
 3) Preguntas y conclusiones (responder en 3–5 líneas cada una)
 
