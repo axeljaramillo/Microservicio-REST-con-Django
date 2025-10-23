@@ -1,0 +1,81 @@
+Microservicio REST con Django — Resultados de pruebas
+Fecha: 2025-10-23
+
+=== Migraciones ===
+$ docker compose -f "/Users/axeljaramillo/Documents/WEB2/project/django_docker/docker-compose.yaml" exec web python manage.py makemigrations courses_api
+Migrations for 'courses_api':
+  courses_api/migrations/0001_initial.py
+    + Create model curso
+    + Create model lecciones
+    + Create model usuarios
+    + Create model comentarios
+    + Create model inscripciones
+
+$ docker compose -f "/Users/axeljaramillo/Documents/WEB2/project/django_docker/docker-compose.yaml" exec web python manage.py migrate
+Operations to perform:
+  Apply all migrations: account, admin, auth, authtoken, contenttypes, courses_api, lms, polls, sessions, sites, socialaccount
+Running migrations:
+  Applying courses_api.0001_initial... OK
+
+$ docker compose -f "/Users/axeljaramillo/Documents/WEB2/project/django_docker/docker-compose.yaml" exec web python manage.py showmigrations courses_api
+courses_api
+ [X] 0001_initial
+
+$ docker compose -f "/Users/axeljaramillo/Documents/WEB2/project/django_docker/docker-compose.yaml" exec web python manage.py check
+System check identified no issues (0 silenced).
+
+=== Health y Documentación ===
+$ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8500/api/healthz/
+200
+
+$ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8500/swagger/
+200
+
+$ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8500/redoc/
+200
+
+=== API Root ===
+$ curl -s http://localhost:8500/api/
+{"users":"http://localhost:8500/api/users/","usuarios":"http://localhost:8500/api/usuarios/","cursos":"http://localhost:8500/api/cursos/","lecciones":"http://localhost:8500/api/lecciones/","inscripciones":"http://localhost:8500/api/inscripciones/","comentarios":"http://localhost:8500/api/comentarios/"}
+
+=== CRUD de ejemplo ===
+# Crear curso
+$ curl -s -X POST http://localhost:8500/api/cursos/ -H "Content-Type: application/json" -d '{"nombre":"Python 101","categoria":"Programación","rol":"docente"}'
+{"id":1,"nombre":"Python 101","categoria":"Programación","rol":"docente","created_at":"2025-10-23T06:35:07.214820Z","updated_at":"2025-10-23T06:35:07.214834Z"}
+
+# Listar cursos
+$ curl -s http://localhost:8500/api/cursos/
+{"count":1,"next":null,"previous":null,"results":[{"id":1,"nombre":"Python 101","categoria":"Programación","rol":"docente","created_at":"2025-10-23T06:35:07.214820Z","updated_at":"2025-10-23T06:35:07.214834Z"}]}
+
+# Crear lección
+$ curl -s -X POST http://localhost:8500/api/lecciones/ -H "Content-Type: application/json" -d '{"titulo":"Intro","contenido":"Bienvenidos","curso":1}'
+{"id":1,"titulo":"Intro","contenido":"Bienvenidos","curso":1,"curso_nombre":"Python 101","fecha_creacion":"2025-10-23T06:35:20.983345Z","created_at":"2025-10-23T06:35:20.983477Z","updated_at":"2025-10-23T06:35:20.983485Z"}
+
+# Listar lecciones
+$ curl -s http://localhost:8500/api/lecciones/
+{"count":1,"next":null,"previous":null,"results":[{"id":1,"titulo":"Intro","contenido":"Bienvenidos","curso":1,"curso_nombre":"Python 101","fecha_creacion":"2025-10-23T06:35:20.983345Z","created_at":"2025-10-23T06:35:20.983477Z","updated_at":"2025-10-23T06:35:20.983485Z"}]}
+
+# Crear usuario (tabla auth_user)
+$ curl -s -X POST http://localhost:8500/api/users/ -H "Content-Type: application/json" -d '{"username":"demo","email":"demo@example.com","password":"demopass","first_name":"De","last_name":"Mo"}'
+{"id":1,"username":"demo","email":"demo@example.com","first_name":"De","last_name":"Mo"}
+
+# Buscar usuario
+$ curl -s "http://localhost:8500/api/users/?search=demo"
+{"count":1,"next":null,"previous":null,"results":[{"id":1,"username":"demo","email":"demo@example.com","first_name":"De","last_name":"Mo"}]}
+
+# Crear perfil en 'usuarios' (vinculado a auth_user)
+$ curl -s -X POST http://localhost:8500/api/usuarios/ -H "Content-Type: application/json" -d '{"user":1,"nombre":"Demo","apellido":"User","email":"demo@example.com","telefono":"5551234","rol":"alumno"}'
+{"id":1,"user":1,"user_username":"demo","nombre":"Demo","apellido":"User","email":"demo@example.com","telefono":"5551234","rol":"alumno","created_at":"2025-10-23T06:36:07.971077Z","updated_at":"2025-10-23T06:36:07.971088Z"}
+
+# Inscribir usuario al curso
+$ curl -s -X POST http://localhost:8500/api/inscripciones/ -H "Content-Type: application/json" -d '{"usuario":1,"curso":1,"activa":true}'
+{"id":1,"usuario":1,"usuario_nombre":"Demo","curso":1,"curso_nombre":"Python 101","fecha_inscripcion":"2025-10-23T06:36:13.379451Z","activa":true,"created_at":"2025-10-23T06:36:13.379644Z","updated_at":"2025-10-23T06:36:13.379656Z"}
+
+# Comentar en una lección
+$ curl -s -X POST http://localhost:8500/api/comentarios/ -H "Content-Type: application/json" -d '{"usuario":1,"leccion":1,"contenido":"Muy buena lección"}'
+{"id":1,"usuario":1,"usuario_nombre":"Demo","leccion":1,"leccion_titulo":"Intro","contenido":"Muy buena lección","fecha_creacion":"2025-10-23T06:36:32.157946Z","created_at":"2025-10-23T06:36:32.158080Z","updated_at":"2025-10-23T06:36:32.158093Z"}
+
+=== Observaciones ===
+- Todas las rutas clave responden con 200 OK (healthz, swagger, redoc).
+- CRUD básico verificado para cursos, lecciones, usuarios, usuarios (perfil), inscripciones y comentarios.
+- Migraciones aplicadas correctamente y chequeo de Django sin problemas.
