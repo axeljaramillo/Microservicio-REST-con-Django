@@ -59,10 +59,3 @@ export DATABASE_URL=...  # or update settings.py
 python manage.py migrate
 python manage.py runserver
 ```
-
-## Screenshots
-Add screenshots of Swagger, container running, and example requests as required by your submission.
-
----
-
-Made for educational purposes.
