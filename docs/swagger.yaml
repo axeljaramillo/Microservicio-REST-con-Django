@@ -1,0 +1,2328 @@
+swagger: '2.0'
+info:
+  title: LMS API Documentation
+  description: A comprehensive Learning Management System API built with Django REST
+    Framework. Supports multi-role users (instructors and students) with full CRUD
+    operations for courses, lessons, enrollments, and more.
+  termsOfService: https://www.google.com/policies/terms/
+  contact:
+    email: admin@lms.com
+  license:
+    name: MIT License
+  version: v1
+host: localhost:8500
+schemes:
+- http
+basePath: /api
+consumes:
+- application/json
+produces:
+- application/json
+securityDefinitions:
+  basic:
+    type: basic
+  api_key:
+    type: apiKey
+    in: header
+    name: Authorization
+    description: 'Token-based authentication. Example: "Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"'
+security:
+- api_key: []
+- basic: []
+paths:
+  /comments/:
+    get:
+      operationId: comments_list
+      description: ''
+      parameters:
+      - name: course
+        in: query
+        description: course
+        required: false
+        type: string
+      - name: user
+        in: query
+        description: user
+        required: false
+        type: string
+      - name: rating
+        in: query
+        description: rating
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/CoursesApiComment'
+      tags:
+      - comments
+    post:
+      operationId: comments_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiComment'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiComment'
+      tags:
+      - comments
+    parameters: []
+  /comments/{id}/:
+    get:
+      operationId: comments_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiComment'
+      tags:
+      - comments
+    put:
+      operationId: comments_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiComment'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiComment'
+      tags:
+      - comments
+    patch:
+      operationId: comments_partial_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiComment'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiComment'
+      tags:
+      - comments
+    delete:
+      operationId: comments_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - comments
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this comment.
+      required: true
+      type: integer
+  /courses/:
+    get:
+      operationId: courses_list
+      description: ''
+      parameters:
+      - name: instructor
+        in: query
+        description: instructor
+        required: false
+        type: string
+      - name: is_published
+        in: query
+        description: is_published
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/CoursesApiCourse'
+      tags:
+      - courses
+    post:
+      operationId: courses_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiCourse'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiCourse'
+      tags:
+      - courses
+    parameters: []
+  /courses/{id}/:
+    get:
+      operationId: courses_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiCourse'
+      tags:
+      - courses
+    put:
+      operationId: courses_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiCourse'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiCourse'
+      tags:
+      - courses
+    patch:
+      operationId: courses_partial_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiCourse'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiCourse'
+      tags:
+      - courses
+    delete:
+      operationId: courses_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - courses
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this course.
+      required: true
+      type: integer
+  /enrollments/:
+    get:
+      operationId: enrollments_list
+      description: ''
+      parameters:
+      - name: user
+        in: query
+        description: user
+        required: false
+        type: string
+      - name: course
+        in: query
+        description: course
+        required: false
+        type: string
+      - name: is_active
+        in: query
+        description: is_active
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/CoursesApiEnrollment'
+      tags:
+      - enrollments
+    post:
+      operationId: enrollments_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiEnrollment'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiEnrollment'
+      tags:
+      - enrollments
+    parameters: []
+  /enrollments/{id}/:
+    get:
+      operationId: enrollments_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiEnrollment'
+      tags:
+      - enrollments
+    put:
+      operationId: enrollments_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiEnrollment'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiEnrollment'
+      tags:
+      - enrollments
+    patch:
+      operationId: enrollments_partial_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiEnrollment'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiEnrollment'
+      tags:
+      - enrollments
+    delete:
+      operationId: enrollments_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - enrollments
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this enrollment.
+      required: true
+      type: integer
+  /lessons/:
+    get:
+      operationId: lessons_list
+      description: ''
+      parameters:
+      - name: course
+        in: query
+        description: course
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/CoursesApiLesson'
+      tags:
+      - lessons
+    post:
+      operationId: lessons_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiLesson'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiLesson'
+      tags:
+      - lessons
+    parameters: []
+  /lessons/{id}/:
+    get:
+      operationId: lessons_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiLesson'
+      tags:
+      - lessons
+    put:
+      operationId: lessons_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiLesson'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiLesson'
+      tags:
+      - lessons
+    patch:
+      operationId: lessons_partial_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiLesson'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiLesson'
+      tags:
+      - lessons
+    delete:
+      operationId: lessons_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - lessons
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this lesson.
+      required: true
+      type: integer
+  /lms/categories/:
+    get:
+      operationId: lms_categories_list
+      description: Categorias para los cursos ofrecidos (read-only)
+      parameters:
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Category'
+      tags:
+      - lms
+    parameters: []
+  /lms/categories/{id}/:
+    get:
+      operationId: lms_categories_read
+      description: Categorias para los cursos ofrecidos (read-only)
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Category'
+      tags:
+      - lms
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this Category.
+      required: true
+      type: integer
+  /lms/courses/:
+    get:
+      operationId: lms_courses_list
+      description: ViewSet for Course model
+      parameters:
+      - name: difficulty
+        in: query
+        description: difficulty
+        required: false
+        type: string
+        enum:
+        - beginner
+        - intermediate
+        - advanced
+      - name: status
+        in: query
+        description: status
+        required: false
+        type: string
+        enum:
+        - draft
+        - published
+        - archived
+      - name: category
+        in: query
+        description: category
+        required: false
+        type: string
+      - name: instructor
+        in: query
+        description: instructor
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Course'
+      tags:
+      - lms
+    post:
+      operationId: lms_courses_create
+      description: ViewSet for Course model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Course'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Course'
+      tags:
+      - lms
+    parameters: []
+  /lms/courses/{id}/:
+    get:
+      operationId: lms_courses_read
+      description: ViewSet for Course model
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Course'
+      tags:
+      - lms
+    put:
+      operationId: lms_courses_update
+      description: ViewSet for Course model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Course'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Course'
+      tags:
+      - lms
+    patch:
+      operationId: lms_courses_partial_update
+      description: ViewSet for Course model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Course'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Course'
+      tags:
+      - lms
+    delete:
+      operationId: lms_courses_delete
+      description: ViewSet for Course model
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - lms
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this Course.
+      required: true
+      type: integer
+  /lms/enrollments/:
+    get:
+      operationId: lms_enrollments_list
+      description: ViewSet for Enrollment model
+      parameters:
+      - name: status
+        in: query
+        description: status
+        required: false
+        type: string
+        enum:
+        - active
+        - completed
+        - dropped
+        - suspended
+      - name: course
+        in: query
+        description: course
+        required: false
+        type: string
+      - name: student
+        in: query
+        description: student
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Enrollment'
+      tags:
+      - lms
+    post:
+      operationId: lms_enrollments_create
+      description: ViewSet for Enrollment model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Enrollment'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Enrollment'
+      tags:
+      - lms
+    parameters: []
+  /lms/enrollments/{id}/:
+    get:
+      operationId: lms_enrollments_read
+      description: ViewSet for Enrollment model
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Enrollment'
+      tags:
+      - lms
+    put:
+      operationId: lms_enrollments_update
+      description: ViewSet for Enrollment model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Enrollment'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Enrollment'
+      tags:
+      - lms
+    patch:
+      operationId: lms_enrollments_partial_update
+      description: ViewSet for Enrollment model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Enrollment'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Enrollment'
+      tags:
+      - lms
+    delete:
+      operationId: lms_enrollments_delete
+      description: ViewSet for Enrollment model
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - lms
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this Enrollment.
+      required: true
+      type: integer
+  /lms/lesson-progress/:
+    get:
+      operationId: lms_lesson-progress_list
+      description: ViewSet for LessonProgress model
+      parameters:
+      - name: student
+        in: query
+        description: student
+        required: false
+        type: string
+      - name: lesson
+        in: query
+        description: lesson
+        required: false
+        type: string
+      - name: is_completed
+        in: query
+        description: is_completed
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/LessonProgress'
+      tags:
+      - lms
+    post:
+      operationId: lms_lesson-progress_create
+      description: ViewSet for LessonProgress model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/LessonProgress'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/LessonProgress'
+      tags:
+      - lms
+    parameters: []
+  /lms/lesson-progress/{id}/:
+    get:
+      operationId: lms_lesson-progress_read
+      description: ViewSet for LessonProgress model
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LessonProgress'
+      tags:
+      - lms
+    put:
+      operationId: lms_lesson-progress_update
+      description: ViewSet for LessonProgress model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/LessonProgress'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LessonProgress'
+      tags:
+      - lms
+    patch:
+      operationId: lms_lesson-progress_partial_update
+      description: ViewSet for LessonProgress model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/LessonProgress'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LessonProgress'
+      tags:
+      - lms
+    delete:
+      operationId: lms_lesson-progress_delete
+      description: ViewSet for LessonProgress model
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - lms
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this Lesson Progress.
+      required: true
+      type: integer
+  /lms/lessons/:
+    get:
+      operationId: lms_lessons_list
+      description: ViewSet for Lesson model
+      parameters:
+      - name: course
+        in: query
+        description: course
+        required: false
+        type: string
+      - name: lesson_type
+        in: query
+        description: lesson_type
+        required: false
+        type: string
+        enum:
+        - video
+        - text
+        - quiz
+        - assignment
+        - live
+      - name: is_published
+        in: query
+        description: is_published
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Lesson'
+      tags:
+      - lms
+    post:
+      operationId: lms_lessons_create
+      description: ViewSet for Lesson model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Lesson'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Lesson'
+      tags:
+      - lms
+    parameters: []
+  /lms/lessons/{id}/:
+    get:
+      operationId: lms_lessons_read
+      description: ViewSet for Lesson model
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Lesson'
+      tags:
+      - lms
+    put:
+      operationId: lms_lessons_update
+      description: ViewSet for Lesson model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Lesson'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Lesson'
+      tags:
+      - lms
+    patch:
+      operationId: lms_lessons_partial_update
+      description: ViewSet for Lesson model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Lesson'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Lesson'
+      tags:
+      - lms
+    delete:
+      operationId: lms_lessons_delete
+      description: ViewSet for Lesson model
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - lms
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this Lesson.
+      required: true
+      type: integer
+  /lms/profiles/:
+    get:
+      operationId: lms_profiles_list
+      description: ViewSet for Profile model
+      parameters:
+      - name: is_instructor
+        in: query
+        description: is_instructor
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Profile'
+      tags:
+      - lms
+    post:
+      operationId: lms_profiles_create
+      description: ViewSet for Profile model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Profile'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Profile'
+      tags:
+      - lms
+    parameters: []
+  /lms/profiles/{id}/:
+    get:
+      operationId: lms_profiles_read
+      description: ViewSet for Profile model
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Profile'
+      tags:
+      - lms
+    put:
+      operationId: lms_profiles_update
+      description: ViewSet for Profile model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Profile'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Profile'
+      tags:
+      - lms
+    patch:
+      operationId: lms_profiles_partial_update
+      description: ViewSet for Profile model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Profile'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Profile'
+      tags:
+      - lms
+    delete:
+      operationId: lms_profiles_delete
+      description: ViewSet for Profile model
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - lms
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this Profile.
+      required: true
+      type: integer
+  /lms/reviews/:
+    get:
+      operationId: lms_reviews_list
+      description: ViewSet for CourseReview model
+      parameters:
+      - name: course
+        in: query
+        description: course
+        required: false
+        type: string
+      - name: rating
+        in: query
+        description: rating
+        required: false
+        type: string
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/CourseReview'
+      tags:
+      - lms
+    post:
+      operationId: lms_reviews_create
+      description: ViewSet for CourseReview model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CourseReview'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/CourseReview'
+      tags:
+      - lms
+    parameters: []
+  /lms/reviews/{id}/:
+    get:
+      operationId: lms_reviews_read
+      description: ViewSet for CourseReview model
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CourseReview'
+      tags:
+      - lms
+    put:
+      operationId: lms_reviews_update
+      description: ViewSet for CourseReview model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CourseReview'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CourseReview'
+      tags:
+      - lms
+    patch:
+      operationId: lms_reviews_partial_update
+      description: ViewSet for CourseReview model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CourseReview'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CourseReview'
+      tags:
+      - lms
+    delete:
+      operationId: lms_reviews_delete
+      description: ViewSet for CourseReview model
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - lms
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this Course Review.
+      required: true
+      type: integer
+  /lms/users/:
+    get:
+      operationId: lms_users_list
+      description: ViewSet for User model
+      parameters:
+      - name: is_active
+        in: query
+        description: is_active
+        required: false
+        type: string
+      - name: is_staff
+        in: query
+        description: is_staff
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/User'
+      tags:
+      - lms
+    post:
+      operationId: lms_users_create
+      description: ViewSet for User model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+      - lms
+    parameters: []
+  /lms/users/{id}/:
+    get:
+      operationId: lms_users_read
+      description: ViewSet for User model
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+      - lms
+    put:
+      operationId: lms_users_update
+      description: ViewSet for User model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+      - lms
+    patch:
+      operationId: lms_users_partial_update
+      description: ViewSet for User model
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+      - lms
+    delete:
+      operationId: lms_users_delete
+      description: ViewSet for User model
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - lms
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this user.
+      required: true
+      type: integer
+  /users/:
+    get:
+      operationId: users_list
+      description: ''
+      parameters:
+      - name: search
+        in: query
+        description: A search term.
+        required: false
+        type: string
+      - name: ordering
+        in: query
+        description: Which field to use when ordering the results.
+        required: false
+        type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        required: false
+        type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+            - count
+            - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/CoursesApiUser'
+      tags:
+      - users
+    post:
+      operationId: users_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiUser'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiUser'
+      tags:
+      - users
+    parameters: []
+  /users/{id}/:
+    get:
+      operationId: users_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiUser'
+      tags:
+      - users
+    put:
+      operationId: users_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiUser'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiUser'
+      tags:
+      - users
+    patch:
+      operationId: users_partial_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/CoursesApiUser'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CoursesApiUser'
+      tags:
+      - users
+    delete:
+      operationId: users_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - users
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this user.
+      required: true
+      type: integer
+definitions:
+  CoursesApiComment:
+    required:
+    - user
+    - course
+    - content
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        title: User
+        type: integer
+      user_username:
+        title: User username
+        type: string
+        readOnly: true
+        minLength: 1
+      course:
+        title: Course
+        type: integer
+      course_title:
+        title: Course title
+        type: string
+        readOnly: true
+        minLength: 1
+      content:
+        title: Content
+        type: string
+        minLength: 1
+      rating:
+        title: Rating
+        type: integer
+        maximum: 32767
+        minimum: 0
+        x-nullable: true
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+  CoursesApiCourse:
+    required:
+    - title
+    - instructor
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      title:
+        title: Title
+        type: string
+        maxLength: 255
+        minLength: 1
+      description:
+        title: Description
+        type: string
+      instructor:
+        title: Instructor
+        type: integer
+      instructor_username:
+        title: Instructor username
+        type: string
+        readOnly: true
+        minLength: 1
+      is_published:
+        title: Is published
+        type: boolean
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+  CoursesApiEnrollment:
+    required:
+    - user
+    - course
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        title: User
+        type: integer
+      user_username:
+        title: User username
+        type: string
+        readOnly: true
+        minLength: 1
+      course:
+        title: Course
+        type: integer
+      course_title:
+        title: Course title
+        type: string
+        readOnly: true
+        minLength: 1
+      is_active:
+        title: Is active
+        type: boolean
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+  CoursesApiLesson:
+    required:
+    - course
+    - title
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      course:
+        title: Course
+        type: integer
+      course_title:
+        title: Course title
+        type: string
+        readOnly: true
+        minLength: 1
+      title:
+        title: Title
+        type: string
+        maxLength: 255
+        minLength: 1
+      content:
+        title: Content
+        type: string
+      order:
+        title: Order
+        type: integer
+        default: 1
+        maximum: 2147483647
+        minimum: 0
+      duration_minutes:
+        title: Duration minutes
+        type: integer
+        maximum: 2147483647
+        minimum: 0
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+  Category:
+    required:
+    - name
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 100
+        minLength: 1
+      description:
+        title: Description
+        type: string
+      color:
+        title: Color
+        description: Hex color code
+        type: string
+        maxLength: 7
+        minLength: 1
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+  Course:
+    required:
+    - title
+    - slug
+    - description
+    - instructor
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      title:
+        title: Title
+        type: string
+        maxLength: 200
+        minLength: 1
+      slug:
+        title: Slug
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 200
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        minLength: 1
+      short_description:
+        title: Short description
+        type: string
+        maxLength: 300
+      instructor:
+        title: Instructor
+        type: integer
+      category:
+        title: Category
+        type: integer
+        x-nullable: true
+      difficulty:
+        title: Difficulty
+        type: string
+        enum:
+        - beginner
+        - intermediate
+        - advanced
+      status:
+        title: Status
+        type: string
+        enum:
+        - draft
+        - published
+        - archived
+      price:
+        title: Price
+        type: string
+        format: decimal
+      thumbnail:
+        title: Thumbnail
+        type: string
+        readOnly: true
+        x-nullable: true
+        format: uri
+      duration_hours:
+        title: Duration hours
+        description: Total course duration in hours
+        type: integer
+        maximum: 2147483647
+        minimum: 0
+      max_students:
+        title: Max students
+        description: Maximum number of students (null = unlimited)
+        type: integer
+        maximum: 2147483647
+        minimum: 0
+        x-nullable: true
+      prerequisites:
+        title: Prerequisites
+        description: Course prerequisites
+        type: string
+      learning_objectives:
+        title: Learning objectives
+        description: What students will learn
+        type: string
+      is_featured:
+        title: Is featured
+        type: boolean
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+  Enrollment:
+    required:
+    - student
+    - course
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      student:
+        title: Student
+        type: integer
+      course:
+        title: Course
+        type: integer
+      status:
+        title: Status
+        type: string
+        enum:
+        - active
+        - completed
+        - dropped
+        - suspended
+      enrolled_at:
+        title: Enrolled at
+        type: string
+        format: date-time
+        readOnly: true
+      completed_at:
+        title: Completed at
+        type: string
+        format: date-time
+        readOnly: true
+        x-nullable: true
+      progress_percentage:
+        title: Progress percentage
+        description: Course completion percentage
+        type: integer
+        maximum: 100
+        minimum: 0
+      last_accessed:
+        title: Last accessed
+        type: string
+        format: date-time
+        x-nullable: true
+      notes:
+        title: Notes
+        description: Instructor notes about this enrollment
+        type: string
+  LessonProgress:
+    required:
+    - student
+    - lesson
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      student:
+        title: Student
+        type: integer
+      lesson:
+        title: Lesson
+        type: integer
+      is_completed:
+        title: Is completed
+        type: boolean
+      completed_at:
+        title: Completed at
+        type: string
+        format: date-time
+        x-nullable: true
+      time_spent_minutes:
+        title: Time spent minutes
+        description: Time spent on this lesson
+        type: integer
+        maximum: 2147483647
+        minimum: 0
+      last_position:
+        title: Last position
+        description: Last position in video (seconds)
+        type: integer
+        maximum: 2147483647
+        minimum: 0
+      notes:
+        title: Notes
+        description: Student notes for this lesson
+        type: string
+  Lesson:
+    required:
+    - course
+    - title
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      course:
+        title: Course
+        type: integer
+      title:
+        title: Title
+        type: string
+        maxLength: 200
+        minLength: 1
+      description:
+        title: Description
+        type: string
+      lesson_type:
+        title: Lesson type
+        type: string
+        enum:
+        - video
+        - text
+        - quiz
+        - assignment
+        - live
+      content:
+        title: Content
+        description: Lesson content (text, video URL, etc.)
+        type: string
+      video_url:
+        title: Video url
+        description: Video URL for video lessons
+        type: string
+        format: uri
+        maxLength: 200
+      duration_minutes:
+        title: Duration minutes
+        description: Lesson duration in minutes
+        type: integer
+        maximum: 2147483647
+        minimum: 0
+      order:
+        title: Order
+        description: Order within the course
+        type: integer
+        default: 0
+        maximum: 2147483647
+        minimum: 0
+      is_published:
+        title: Is published
+        type: boolean
+      is_free:
+        title: Is free
+        description: Free lesson (accessible without enrollment)
+        type: boolean
+      attachments:
+        title: Attachments
+        type: string
+        readOnly: true
+        x-nullable: true
+        format: uri
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+  Profile:
+    required:
+    - user
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        title: User
+        type: integer
+      bio:
+        title: Bio
+        type: string
+        maxLength: 500
+      birth_date:
+        title: Birth date
+        type: string
+        format: date
+        x-nullable: true
+      phone:
+        title: Phone
+        type: string
+        maxLength: 20
+      avatar:
+        title: Avatar
+        type: string
+        readOnly: true
+        x-nullable: true
+        format: uri
+      is_instructor:
+        title: Is instructor
+        type: boolean
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+  CourseReview:
+    required:
+    - student
+    - course
+    - rating
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      student:
+        title: Student
+        type: integer
+      course:
+        title: Course
+        type: integer
+      rating:
+        title: Rating
+        type: integer
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+      comment:
+        title: Comment
+        type: string
+      is_anonymous:
+        title: Is anonymous
+        type: boolean
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+  User:
+    required:
+    - username
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      username:
+        title: Username
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        type: string
+        pattern: ^[\w.@+-]+$
+        maxLength: 150
+        minLength: 1
+      email:
+        title: Email address
+        type: string
+        format: email
+        maxLength: 254
+      first_name:
+        title: First name
+        type: string
+        maxLength: 150
+      last_name:
+        title: Last name
+        type: string
+        maxLength: 150
+      is_active:
+        title: Active
+        description: Designates whether this user should be treated as active. Unselect
+          this instead of deleting accounts.
+        type: boolean
+      date_joined:
+        title: Date joined
+        type: string
+        format: date-time
+        readOnly: true
+  CoursesApiUser:
+    required:
+    - username
+    - password
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      username:
+        title: Username
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        type: string
+        pattern: ^[\w.@+-]+$
+        maxLength: 150
+        minLength: 1
+      email:
+        title: Email address
+        type: string
+        format: email
+        maxLength: 254
+      password:
+        title: Password
+        type: string
+        minLength: 6
+      first_name:
+        title: First name
+        type: string
+        maxLength: 150
+      last_name:
+        title: Last name
+        type: string
+        maxLength: 150

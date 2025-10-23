@@ -1,0 +1,97 @@
+Microservicio REST con Django — Guía de Entrega y Evidencias
+Fecha: 2025-10-23
+Repositorio: https://github.com/axeljaramillo/Microservicio-REST-con-Django
+
+1) README.md — Contenido mínimo
+
+A. Instrucciones para levantar el servicio
+- Requisitos: Docker y Docker Compose
+- Pasos:
+  1. Construir e iniciar:
+     docker compose build
+     docker compose up -d
+  2. (Opcional) Crear superusuario:
+     docker compose exec web python manage.py createsuperuser
+  3. Verificar:
+     - App raíz:              http://localhost:8500/
+     - API root (router):     http://localhost:8500/api/
+     - Swagger UI:            http://localhost:8500/swagger/
+     - Redoc:                 http://localhost:8500/redoc/
+
+B. Descripción general del proyecto
+- Microservicio de una plataforma de cursos en línea con Django REST Framework.
+- Recursos principales: usuarios (auth + perfil), cursos, lecciones, inscripciones y comentarios.
+- Documentación automática con drf-yasg (Swagger/Redoc).
+- Docker + PostgreSQL para levantar el entorno fácilmente.
+
+C. Ejemplo de endpoints / evidencias de Swagger
+- GET    /api/cursos/
+- POST   /api/cursos/
+- GET    /api/lecciones/
+- POST   /api/lecciones/
+- POST   /api/users/            (crear usuario auth)
+- POST   /api/usuarios/         (crear perfil vinculado a user)
+- POST   /api/inscripciones/
+- POST   /api/comentarios/
+- Documentación:
+  - Swagger UI:  /swagger/
+  - Redoc:       /redoc/
+
+2) Entrega (PDF al aula virtual)
+
+A. Portada
+- Nombre completo, matrícula y grupo.
+
+B. Esquema relacional (draw.io o similar)
+- Sugerencia de relaciones (describir en el diagrama):
+  - Usuario (auth_user) 1—1 Usuarios (perfil)
+  - Usuarios (perfil)   1—N Inscripciones
+  - Curso               1—N Lecciones
+  - Curso               1—N Inscripciones
+  - Usuarios (perfil)   1—N Comentarios
+  - Lección             1—N Comentarios
+
+C. Capturas de pantalla
+- Swagger funcionando (http://localhost:8500/swagger/).
+- Contenedor Docker en ejecución (docker compose ps / logs / captura de Docker Desktop).
+- Ejemplos de requests a endpoints (pueden ser capturas de Postman, curl o Swagger UI):
+  - Crear curso (POST /api/cursos/)
+  - Crear usuario (POST /api/users/)
+  - Crear perfil (POST /api/usuarios/)
+  - Inscribirse a un curso (POST /api/inscripciones/)
+  - Comentar en una lección (POST /api/comentarios/)
+
+D. Enlace al repositorio de GitHub
+- https://github.com/axeljaramillo/Microservicio-REST-con-Django
+
+3) Preguntas y conclusiones (responder en 3–5 líneas cada una)
+
+1. ¿Cuál fue el mayor reto técnico que enfrentaste al desarrollar la API y cómo lo resolviste?
+El mayor reto fue la convivencia de múltiples apps con modelos y serializers similares (LMS y courses_api), que causó colisiones en la generación del esquema de Swagger (drf-yasg). Se resolvió asignando ref_name único en los serializers de courses_api y ajustando related_name en modelos para evitar choques con la app lms. Además, se reforzó la configuración de Docker y dependencias para asegurar que todo corra estable.
+
+2. ¿Qué ventajas ofrece Django REST Framework para construir APIs en comparación con otros frameworks que conoces?
+DRF simplifica el CRUD con ViewSets y Routers, ofrece serialización flexible, paginación/filtrado nativo, y un navegador de API muy útil en desarrollo. Su ecosistema maduro, permisos y autenticación integrados, y excelente documentación permiten construir APIs productivas y mantenibles con menos código y más consistencia.
+
+3. ¿Qué aprendiste al integrar drf-yasg para la documentación y cómo crees que esta práctica ayuda en proyectos reales?
+Aprendí que la generación automática de OpenAPI es sensible a nombres de serializers y referencias duplicadas (ref_name). Documentar con Swagger/Redoc acelera el onboarding del equipo, mejora la comunicación con frontend/QA, y sirve como contrato vivo de la API, reduciendo ambigüedades y errores de integración.
+
+4. ¿Por qué es importante utilizar Docker en entornos de desarrollo profesional?
+Docker garantiza entornos reproducibles, reduce el “works on my machine”, y unifica la configuración (versiones de Python, dependencias, base de datos). Facilita CI/CD, escalado, y despliegue consistente en múltiples ambientes (desarrollo, staging, producción) con mínima fricción y mayor confiabilidad.
+
+5. Si tuvieras más tiempo, ¿qué funcionalidad o mejora agregarías a tu API?
+Agregaría autenticación JWT y permisos por rol (alumno/docente/admin), pruebas automatizadas (pytest + coverage), rate limiting básico, y versionado de API. También añadiría soporte de media (archivos) en S3, y una cola de tareas para procesos asíncronos (por ejemplo, envíos de email o procesamiento de video).
+
+6. ¿Qué aprendiste de este ejercicio sobre el diseño de relaciones entre modelos en Django?
+Aprendí a modelar relaciones 1:1, 1:N y N:M de forma explícita, a usar related_name para consultas inversas claras y a cuidar las colisiones entre apps. Diseñar bien las relaciones facilita filtros, agregados y escalabilidad, y reduce migraciones problemáticas en el futuro.
+
+4) Notas prácticas para la demo
+- Healthcheck:  http://localhost:8500/api/healthz/
+- OpenAPI JSON: docs/swagger.json
+- OpenAPI YAML: docs/swagger.yaml
+- Comandos útiles:
+  - docker compose up -d
+  - docker compose exec web python manage.py makemigrations courses_api
+  - docker compose exec web python manage.py migrate
+  - docker compose exec web python manage.py check
+  - docker compose logs -f web
+
