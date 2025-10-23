@@ -1,7 +1,7 @@
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0:8500
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8500"
     volumes:
       - .:/app
     ports:
@@ -16,7 +16,7 @@ services:
       - POSTGRES_DB=mydatabase
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSGRES_PORT=5432
+      - POSTGRES_PORT=5432
 
 volumes:
   postgres_data:

@@ -41,6 +41,7 @@ urlpatterns = [
     path("polls/", include("polls.urls")),
     path('admin/', admin.site.urls),
     path('api/lms/', include('lms.urls')),
+    path('api/', include('courses_api.urls')),
     # DRF browsable API login
     path('api-auth/', include('rest_framework.urls')),
 
@@ -51,4 +52,5 @@ urlpatterns = [
          cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc',
          cache_timeout=0), name='schema-redoc'),
+    path('accounts/', include('allauth.urls')),  # Django Allauth URLs')
 ]
