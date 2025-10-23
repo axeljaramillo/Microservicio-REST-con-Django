@@ -1,29 +1,36 @@
 from django.contrib import admin
-from .models import Course, Lesson, Enrollment, Comment
+from .models import curso, usuarios, lecciones, comentarios, inscripciones
 
-@admin.register(Course)
-class CourseAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "instructor", "is_published", "created_at")
-    list_filter = ("is_published", "created_at")
-    search_fields = ("title", "description", "instructor__username")
-
-
-@admin.register(Lesson)
-class LessonAdmin(admin.ModelAdmin):
-    list_display = ("id", "course", "title", "order", "duration_minutes")
-    list_filter = ("course",)
-    search_fields = ("title", "course__title")
+@admin.register(curso)
+class CursoAdmin(admin.ModelAdmin):
+    list_display = ("id", "nombre", "categoria", "rol", "created_at")
+    list_filter = ("categoria", "rol")
+    search_fields = ("nombre", "categoria")
 
 
-@admin.register(Enrollment)
-class EnrollmentAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "course", "is_active", "created_at")
-    list_filter = ("is_active", "course")
-    search_fields = ("user__username", "course__title")
+@admin.register(usuarios)
+class UsuariosAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "nombre", "apellido", "email", "rol", "created_at")
+    list_filter = ("rol",)
+    search_fields = ("nombre", "apellido", "email", "user__username")
 
 
-@admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "course", "rating", "created_at")
-    list_filter = ("rating", "course")
-    search_fields = ("content", "user__username", "course__title")
+@admin.register(lecciones)
+class LeccionesAdmin(admin.ModelAdmin):
+    list_display = ("id", "curso", "titulo", "fecha_creacion")
+    list_filter = ("curso",)
+    search_fields = ("titulo", "curso__nombre")
+
+
+@admin.register(inscripciones)
+class InscripcionesAdmin(admin.ModelAdmin):
+    list_display = ("id", "usuario", "curso", "activa", "fecha_inscripcion")
+    list_filter = ("activa", "curso")
+    search_fields = ("usuario__nombre", "curso__nombre")
+
+
+@admin.register(comentarios)
+class ComentariosAdmin(admin.ModelAdmin):
+    list_display = ("id", "usuario", "leccion", "fecha_creacion")
+    list_filter = ("leccion",)
+    search_fields = ("contenido", "usuario__nombre", "leccion__titulo")

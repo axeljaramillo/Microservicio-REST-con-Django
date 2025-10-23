@@ -1,8 +1,6 @@
-from django.conf import settings
 from django.db import models
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class TimeStampedModel(models.Model):
@@ -13,59 +11,55 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-class Course(TimeStampedModel):
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    instructor = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='courses_api_courses_taught'
-    )
-    is_published = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ['-created_at']
+class curso(TimeStampedModel):
+    nombre = models.CharField(max_length=100)
+    categoria = models.CharField(max_length=100)
+    rol = models.CharField(max_length=10)
 
     def __str__(self):
-        return f"{self.title} (by {self.instructor})"
+        return f"{self.nombre} - {self.id} - {self.categoria} - {self.rol}"
 
 
-class Lesson(TimeStampedModel):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
-    title = models.CharField(max_length=255)
-    content = models.TextField(blank=True)
-    order = models.PositiveIntegerField(default=1)
-    duration_minutes = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        ordering = ['order', 'id']
-        unique_together = ('course', 'order')
+class usuarios(TimeStampedModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='courses_api_perfil')
+    nombre = models.CharField(max_length=100)
+    apellido = models.CharField(max_length=100)
+    email = models.EmailField()
+    telefono = models.CharField(max_length=15)
+    rol = models.CharField(max_length=10)
 
     def __str__(self):
-        return f"{self.course.title} - {self.order}. {self.title}"
+        return f"{self.nombre} {self.apellido} - {self.id} - {self.email} - {self.rol}"
 
 
-class Enrollment(TimeStampedModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses_api_enrollments')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        unique_together = ('user', 'course')
-        ordering = ['-created_at']
+class lecciones(TimeStampedModel):
+    titulo = models.CharField(max_length=200)
+    contenido = models.TextField()
+    curso = models.ForeignKey(curso, on_delete=models.CASCADE, related_name='lecciones')
+    fecha_creacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.user} -> {self.course} ({'active' if self.is_active else 'inactive'})"
+        return f"{self.titulo} - {self.id} - {self.curso.nombre}"
 
 
-class Comment(TimeStampedModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses_api_comments')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='comments')
-    content = models.TextField()
-    rating = models.PositiveSmallIntegerField(null=True, blank=True)
-
-    class Meta:
-        ordering = ['-created_at']
+class comentarios(TimeStampedModel):
+    usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, related_name='comentarios')
+    leccion = models.ForeignKey(lecciones, on_delete=models.CASCADE, related_name='comentarios')
+    contenido = models.TextField()
+    fecha_creacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"Comment by {self.user} on {self.course}: {self.content[:30]}..."
+        return f"Comentario {self.id} by {self.usuario.nombre} on {self.leccion.titulo}"
+
+
+class inscripciones(TimeStampedModel):
+    usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, related_name='inscripciones')
+    curso = models.ForeignKey(curso, on_delete=models.CASCADE, related_name='inscripciones')
+    fecha_inscripcion = models.DateTimeField(default=timezone.now)
+    activa = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('usuario', 'curso')
+
+    def __str__(self):
+        return f"{self.usuario.nombre} inscrito en {self.curso.nombre} ({'activa' if self.activa else 'inactiva'})"

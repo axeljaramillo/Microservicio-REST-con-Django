@@ -2,19 +2,23 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     UserViewSet,
-    CourseViewSet,
-    LessonViewSet,
-    EnrollmentViewSet,
-    CommentViewSet,
+    UsuariosViewSet,
+    CursoViewSet,
+    LeccionViewSet,
+    InscripcionViewSet,
+    ComentarioViewSet,
+    health,
 )
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
-router.register(r'courses', CourseViewSet, basename='course')
-router.register(r'lessons', LessonViewSet, basename='lesson')
-router.register(r'enrollments', EnrollmentViewSet, basename='enrollment')
-router.register(r'comments', CommentViewSet, basename='comment')
+router.register(r'usuarios', UsuariosViewSet, basename='usuarios')
+router.register(r'cursos', CursoViewSet, basename='curso')
+router.register(r'lecciones', LeccionViewSet, basename='leccion')
+router.register(r'inscripciones', InscripcionViewSet, basename='inscripcion')
+router.register(r'comentarios', ComentarioViewSet, basename='comentario')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('healthz/', health, name='healthz'),
 ]

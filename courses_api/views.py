@@ -1,22 +1,19 @@
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Course, Lesson, Enrollment, Comment
+from .models import curso, usuarios, lecciones, comentarios, inscripciones
 from .serializers import (
-    UserSerializer, CourseSerializer, LessonSerializer,
-    EnrollmentSerializer, CommentSerializer
+    UserSerializer,
+    UsuariosSerializer,
+    CursoSerializer,
+    LeccionSerializer,
+    ComentarioSerializer,
+    InscripcionSerializer,
 )
 
 User = get_user_model()
-
-
-class IsOwnerOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        user = getattr(obj, 'user', None) or getattr(obj, 'instructor', None)
-        return user == request.user or request.user.is_staff
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -27,54 +24,56 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ['username', 'email']
 
 
-class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+class UsuariosViewSet(viewsets.ModelViewSet):
+    queryset = usuarios.objects.select_related('user').all()
+    serializer_class = UsuariosSerializer
+    permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['instructor', 'is_published']
-    search_fields = ['title', 'description']
-    ordering_fields = ['created_at', 'title']
-
-    def perform_create(self, serializer):
-        # Set instructor to current user by default if not provided
-        instructor = serializer.validated_data.get('instructor') or self.request.user
-        serializer.save(instructor=instructor)
+    search_fields = ['nombre', 'apellido', 'email', 'telefono']
 
 
-class LessonViewSet(viewsets.ModelViewSet):
-    queryset = Lesson.objects.select_related('course').all()
-    serializer_class = LessonSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class CursoViewSet(viewsets.ModelViewSet):
+    queryset = curso.objects.all()
+    serializer_class = CursoSerializer
+    permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['course']
-    search_fields = ['title']
-    ordering_fields = ['order', 'created_at']
+    filterset_fields = ['categoria', 'rol']
+    search_fields = ['nombre', 'categoria']
+    ordering_fields = ['created_at', 'nombre']
 
 
-class EnrollmentViewSet(viewsets.ModelViewSet):
-    queryset = Enrollment.objects.select_related('user', 'course').all()
-    serializer_class = EnrollmentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class LeccionViewSet(viewsets.ModelViewSet):
+    queryset = lecciones.objects.select_related('curso').all()
+    serializer_class = LeccionSerializer
+    permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['user', 'course', 'is_active']
-    search_fields = ['course__title', 'user__username']
-    ordering_fields = ['created_at']
-
-    def perform_create(self, serializer):
-        user = serializer.validated_data.get('user') or self.request.user
-        serializer.save(user=user)
+    filterset_fields = ['curso']
+    search_fields = ['titulo']
+    ordering_fields = ['fecha_creacion', 'created_at']
 
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.select_related('user', 'course').all()
-    serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+class InscripcionViewSet(viewsets.ModelViewSet):
+    queryset = inscripciones.objects.select_related('usuario', 'curso').all()
+    serializer_class = InscripcionSerializer
+    permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['course', 'user', 'rating']
-    search_fields = ['content', 'course__title', 'user__username']
-    ordering_fields = ['created_at', 'rating']
+    filterset_fields = ['usuario', 'curso', 'activa']
+    search_fields = ['curso__nombre', 'usuario__nombre']
+    ordering_fields = ['fecha_inscripcion', 'created_at']
 
-    def perform_create(self, serializer):
-        user = serializer.validated_data.get('user') or self.request.user
-        serializer.save(user=user)
+
+class ComentarioViewSet(viewsets.ModelViewSet):
+    queryset = comentarios.objects.select_related('usuario', 'leccion').all()
+    serializer_class = ComentarioSerializer
+    permission_classes = [permissions.AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['leccion', 'usuario']
+    search_fields = ['contenido', 'leccion__titulo', 'usuario__nombre']
+    ordering_fields = ['fecha_creacion', 'created_at']
+
+
+def health(request):
+    return JsonResponse({
+        "status": "ok",
+        "app": "courses_api"
+    })
