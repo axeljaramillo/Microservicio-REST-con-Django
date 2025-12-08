@@ -7,6 +7,10 @@ from .serializers import (
     UserSerializer, CourseSerializer, LessonSerializer,
     EnrollmentSerializer, CommentSerializer
 )
+from .serializers import CourseDetailSerializer
+from rest_framework import generics
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Sum, Avg
 
 User = get_user_model()
 
@@ -38,8 +42,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         # Set instructor to current user by default if not provided
-        instructor = serializer.validated_data.get('instructor') or self.request.user
-        serializer.save(instructor=instructor)
+        # The serializer's HiddenField(default=CurrentUserDefault) will populate instructor from request.user.
+        # Just save the serializer; do not require clients to send instructor.
+        serializer.save()
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -78,3 +83,74 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = serializer.validated_data.get('user') or self.request.user
         serializer.save(user=user)
+
+
+class CourseDetailAPIView(generics.RetrieveAPIView):
+    queryset = Course.objects.prefetch_related('lessons', 'comments', 'enrollments').select_related('instructor')
+    serializer_class = CourseDetailSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+def course_detail_page(request, pk):
+    course = get_object_or_404(
+        Course.objects.select_related('instructor').prefetch_related('lessons', 'comments', 'enrollments'),
+        pk=pk,
+    )
+    lessons = course.lessons.all().order_by('order')
+    total_duration = lessons.aggregate(total=Sum('duration_minutes'))['total'] or 0
+    lesson_count = lessons.count()
+    enrollments_count = course.enrollments.count()
+    avg = course.comments.aggregate(avg=Avg('rating'))['avg']
+    average_rating = round(avg, 2) if avg is not None else None
+
+    context = {
+        'course': course,
+        'lessons': lessons,
+        'lesson_count': lesson_count,
+        'total_duration': total_duration,
+        'enrollments_count': enrollments_count,
+        'average_rating': average_rating,
+    }
+    return render(request, 'course_detail.html', context)
+
+
+def course_edit_page(request, pk):
+    course = get_object_or_404(
+        Course.objects.select_related('instructor').prefetch_related('lessons', 'comments', 'enrollments'),
+        pk=pk,
+    )
+    # Permission: only instructor or staff can edit
+    user = request.user
+    if not user.is_authenticated or (user != course.instructor and not user.is_staff):
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden('No tienes permiso para editar este curso')
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        is_published = request.POST.get('is_published') == 'on'
+
+        if title:
+            course.title = title
+        course.description = description
+        course.is_published = is_published
+        course.save()
+        from django.shortcuts import redirect
+        return redirect('course-detail-page', pk=course.pk)
+
+    lessons = course.lessons.all().order_by('order')
+    total_duration = lessons.aggregate(total=Sum('duration_minutes'))['total'] or 0
+    lesson_count = lessons.count()
+    enrollments_count = course.enrollments.count()
+    avg = course.comments.aggregate(avg=Avg('rating'))['avg']
+    average_rating = round(avg, 2) if avg is not None else None
+
+    context = {
+        'course': course,
+        'lessons': lessons,
+        'lesson_count': lesson_count,
+        'total_duration': total_duration,
+        'enrollments_count': enrollments_count,
+        'average_rating': average_rating,
+    }
+    return render(request, 'course_edit.html', context)

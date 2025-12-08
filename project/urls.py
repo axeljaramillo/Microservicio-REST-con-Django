@@ -21,6 +21,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from lms import views as lms_views
+from courses_api import views as courses_views
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -56,4 +57,7 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc',
          cache_timeout=0), name='schema-redoc'),
     path('accounts/', include('allauth.urls')),  # Django Allauth URLs')
+    # Human-friendly course detail page
+    path('courses/<int:pk>/', courses_views.course_detail_page, name='course-detail-page'),
+    path('courses/<int:pk>/edit/', courses_views.course_edit_page, name='course-edit-page'),
 ]

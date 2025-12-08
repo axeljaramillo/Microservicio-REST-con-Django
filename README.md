@@ -51,18 +51,4 @@ docker compose exec web python manage.py show_urls || true
 - Allowed hosts include `localhost`, `0.0.0.0`, and `web`.
 - Token auth is enabled; you can create tokens via DRF authtoken if desired.
 
-## Development without Docker
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-export DATABASE_URL=...  # or update settings.py
-python manage.py migrate
-python manage.py runserver
-```
 
-## Screenshots
-Add screenshots of Swagger, container running, and example requests as required by your submission.
-
----
-
-Made for educational purposes.

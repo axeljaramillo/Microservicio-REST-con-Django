@@ -1,0 +1,22 @@
+{% load socialaccount %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>Acceder</h1>
+    <form method="post" action="{% url 'account_login' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Login</button>
+    </form>
+
+    <h2>O usar proveedor</h2>
+    {% providers_media_js %}
+    <a href="{% provider_login_url 'google' process='login' %}">Acceder con Google</a>
+
+    <p><a href="{% url 'account_signup' %}">Crear cuenta</a></p>
+  </body>
+</html>

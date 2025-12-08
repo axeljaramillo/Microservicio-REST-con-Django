@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Sign up</title>
+  </head>
+  <body>
+    <h1>Crear cuenta</h1>
+    <form method="post" action="{% url 'account_signup' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Crear</button>
+    </form>
+    <p><a href="{% url 'account_login' %}">Acceder</a></p>
+  </body>
+</html>

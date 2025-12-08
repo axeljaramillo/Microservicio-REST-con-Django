@@ -6,6 +6,7 @@ from .views import (
     LessonViewSet,
     EnrollmentViewSet,
     CommentViewSet,
+    CourseDetailAPIView,
 )
 
 router = DefaultRouter()
@@ -25,4 +26,6 @@ router.register(r'comentarios', CommentViewSet, basename='comentarios')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('courses/<int:pk>/detail/', CourseDetailAPIView.as_view(), name='course-detail'),
+    path('cursos/<int:pk>/detalle/', CourseDetailAPIView.as_view(), name='curso-detalle'),
 ]

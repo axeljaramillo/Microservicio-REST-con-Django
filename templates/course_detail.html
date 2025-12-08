@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ course.title }}</title>
+  </head>
+  <body>
+    <h1>{{ course.title }}</h1>
+    <p><strong>Instructor:</strong> {{ course.instructor.get_full_name }} ({{ course.instructor.username }})</p>
+    <p><strong>Descripción:</strong> {{ course.description }}</p>
+    <p><strong>Publicado:</strong> {{ course.is_published }}</p>
+    <p><strong>Lecciones:</strong> {{ lesson_count }} | <strong>Duración total (min):</strong> {{ total_duration }}</p>
+    <p><strong>Inscripciones:</strong> {{ enrollments_count }} | <strong>Valoración media:</strong> {{ average_rating }}</p>
+
+    <h2>Lecciones</h2>
+    <ul>
+    {% for lesson in lessons %}
+      <li>{{ lesson.order }}. {{ lesson.title }} — {{ lesson.duration_minutes }} min</li>
+    {% empty %}
+      <li>No hay lecciones aún.</li>
+    {% endfor %}
+    </ul>
+
+    <p><a href="/">Volver al inicio</a></p>
+  </body>
+</html>

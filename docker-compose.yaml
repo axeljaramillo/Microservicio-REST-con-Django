@@ -1,13 +1,23 @@
 services:
   web:
     build: .
-    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8500"
+    # Entrypoint handles waiting for the DB and running migrations.
+    command: ["python","manage.py","runserver","0.0.0.0:8500"]
     volumes:
       - .:/app
+    working_dir: /app
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_PORT=5432
+      - DB_HOST=db
     ports:
       - "8500:8500"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: unless-stopped
   db:
     image: postgres:15-alpine
     volumes:
@@ -17,6 +27,12 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_PORT=5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
 
 volumes:
   postgres_data:
